@@ -146,12 +146,11 @@
       "-.-- --- ..- .----. .-. . / ... -- .- .-. - --..-- / .-. .. --. .... - ..--.. / ... --- .-.. ...- . / - .... .. ... .-.-.- .-.-.- .-.-.- / ."
     ];
 
-    const DOT = 200;
-    const DASH = 600;
-    const SYMBOL_PAUSE = 200;
-    const LETTER_PAUSE = 600;
-    const WORD_PAUSE = 1400;
-    const LINE_PAUSE = 3000;
+const DOT = 400;           // was 200
+const DASH = 1000;         // was 600
+const SYMBOL_PAUSE = 300;  // was 200
+const LETTER_PAUSE = 800;  // was 600
+const WORD_PAUSE = 1600;   // was 1400
 
     async function flash(duration) {
       lamp.style.opacity = 1;
