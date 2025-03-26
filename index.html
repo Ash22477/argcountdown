@@ -25,7 +25,7 @@
 
     @keyframes moveCloudRightToLeft {
       from { right: -500px; }
-      to { right: 110%; } /* Cloud exits completely past left */
+      to { right: 110%; }
     }
 
     .cloud-left {
@@ -41,7 +41,7 @@
 
     @keyframes moveCloudLeftToRight {
       from { left: -500px; }
-      to { left: 110%; } /* Cloud exits completely past right */
+      to { left: 110%; }
     }
 
     .streetlamp {
@@ -110,7 +110,9 @@
       <div class="light-cone" id="lamp"></div>
     </div>
   </div>
+
   <audio id="bg-music" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_e58e3ff389.mp3?filename=soft-piano-loop-10965.mp3" autoplay loop></audio>
+  <audio id="morse-audio" src="musical_morse_synced_full.mp3" loop></audio>
 
   <script>
     const lamp = document.getElementById('lamp');
@@ -137,20 +139,21 @@
     setInterval(updateCountdown, 1000);
     updateCountdown();
 
-const lines = [
-  "-.-- --- ..- .----. .-. . ... -- .- .-. - --..-- .-. .. --. .... - ..--.. ... --- .-.. ...- . - .... .. ... .-.-.- .-.-.- .-.-.- .--.",
-  "-.-- --- ..- .----. .-. . ... -- .- .-. - --..-- .-. .. --. .... - ..--.. ... --- .-.. ...- . - .... .. ... .-.-.- .-.-.- .-.-.- ..-",
-  "-.-- --- ..- .----. .-. . ... -- .- .-. - --..-- .-. .. --. .... - ..--.. ... --- .-.. ...- . - .... .. ... .-.-.- .-.-.- .-.-.- --..",
-  "-.-- --- ..- .----. .-. . ... -- .- .-. - --..-- .-. .. --. .... - ..--.. ... --- .-.. ...- . - .... .. ... .-.-.- .-.-.- .-.-.- --..",
-  "-.-- --- ..- .----. .-. . ... -- .- .-. - --..-- .-. .. --. .... - ..--.. ... --- .-.. ...- . - .... .. ... .-.-.- .-.-.- .-.-.- .-..",
-  "-.-- --- ..- .----. .-. . ... -- .- .-. - --..-- .-. .. --. .... - ..--.. ... --- .-.. ...- . - .... .. ... .-.-.- .-.-.- .-.-.- ."
-];
+    const lines = [
+      "-.-- --- ..- .----. .-. . ... -- .- .-. - --..-- .-. .. --. .... - ..--.. ... --- .-.. ...- . - .... .. ... .-.-.- .-.-.- .-.-.- .--.",
+      "-.-- --- ..- .----. .-. . ... -- .- .-. - --..-- .-. .. --. .... - ..--.. ... --- .-.. ...- . - .... .. ... .-.-.- .-.-.- .-.-.- ..-",
+      "-.-- --- ..- .----. .-. . ... -- .- .-. - --..-- .-. .. --. .... - ..--.. ... --- .-.. ...- . - .... .. ... .-.-.- .-.-.- .-.-.- --..",
+      "-.-- --- ..- .----. .-. . ... -- .- .-. - --..-- .-. .. --. .... - ..--.. ... --- .-.. ...- . - .... .. ... .-.-.- .-.-.- .-.-.- --..",
+      "-.-- --- ..- .----. .-. . ... -- .- .-. - --..-- .-. .. --. .... - ..--.. ... --- .-.. ...- . - .... .. ... .-.-.- .-.-.- .-.-.- .-..",
+      "-.-- --- ..- .----. .-. . ... -- .- .-. - --..-- .-. .. --. .... - ..--.. ... --- .-.. ...- . - .... .. ... .-.-.- .-.-.- .-.-.- ."
+    ];
 
-const DOT = 400;           // was 200
-const DASH = 1000;         // was 600
-const SYMBOL_PAUSE = 300;  // was 200
-const LETTER_PAUSE = 800;  // was 600
-const WORD_PAUSE = 1600;   // was 1400
+    const DOT = 400;
+    const DASH = 1000;
+    const SYMBOL_PAUSE = 300;
+    const LETTER_PAUSE = 800;
+    const WORD_PAUSE = 1600;
+    const LINE_PAUSE = 3000;
 
     async function flash(duration) {
       lamp.style.opacity = 1;
@@ -187,8 +190,11 @@ const WORD_PAUSE = 1600;   // was 1400
     }
 
     setTimeout(() => {
-  loopMorse();
-}, 5000); // delay Morse code start by 5 seconds
+      loopMorse();
+      const morseAudio = document.getElementById('morse-audio');
+      morseAudio.volume = 0.3;
+      morseAudio.play();
+    }, 5000);
   </script>
 </body>
 </html>
