@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Morse Code Lamp with Countdown, Music, and Aligned Clouds</title>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(#001122, #000);
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    .cloud-right {
+      position: absolute;
+      top: 0px;
+      right: -500px;
+      width: 500px;
+      height: auto;
+      animation: moveCloudRightToLeft 150s linear infinite;
+      z-index: 3;
+      opacity: 0.5;
+    }
+
+    @keyframes moveCloudRightToLeft {
+      from { right: -500px; }
+      to { right: 110%; } /* Cloud exits completely past left */
+    }
+
+    .cloud-left {
+      position: absolute;
+      top: 0px;
+      left: -500px;
+      width: 500px;
+      height: auto;
+      animation: moveCloudLeftToRight 150s linear infinite;
+      z-index: 3;
+      opacity: 0.5;
+    }
+
+    @keyframes moveCloudLeftToRight {
+      from { left: -500px; }
+      to { left: 110%; } /* Cloud exits completely past right */
+    }
+
+    .streetlamp {
+      position: absolute;
+      bottom: 0;
+      left: 40px;
+      width: 10px;
+      height: 250px;
+      background: #333;
+      z-index: 1;
+    }
+
+    .lamp-head {
+      position: absolute;
+      top: -10px;
+      left: -30px;
+      width: 70px;
+      height: 20px;
+      background: #222;
+      border-radius: 10px;
+    }
+
+    .light-cone {
+      position: absolute;
+      top: 10px;
+      left: -100px;
+      width: 200px;
+      height: 300px;
+      background: radial-gradient(circle at center top, rgba(255,255,180,0.7), rgba(255,255,180,0) 80%);
+      opacity: 0;
+      transition: opacity 0.2s ease-in-out;
+    }
+
+    .countdown {
+      position: absolute;
+      top: 45%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #fff;
+      font-family: monospace;
+      font-size: 64px;
+      z-index: 2;
+      text-align: center;
+    }
+
+    .message {
+      position: absolute;
+      top: 55%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #ccc;
+      font-family: monospace;
+      font-size: 24px;
+      z-index: 2;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <img src="dc6a0cf2f1575f9f8da7159b72200ecb.gif" alt="cloud" class="cloud-right" />
+  <img src="dc6a0cf2f1575f9f8da7159b72200ecb.gif" alt="cloud" class="cloud-left" />
+  <div class="countdown" id="countdown"></div>
+  <div class="message">Good things come to those who wait.</div>
+  <div class="streetlamp">
+    <div class="lamp-head">
+      <div class="light-cone" id="lamp"></div>
+    </div>
+  </div>
+  <audio id="bg-music" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_e58e3ff389.mp3?filename=soft-piano-loop-10965.mp3" autoplay loop></audio>
+
+  <script>
+    const lamp = document.getElementById('lamp');
+    const countdown = document.getElementById('countdown');
+
+    function updateCountdown() {
+      const targetDate = new Date('2026-02-09T00:00:00+04:00').getTime();
+      const now = new Date().getTime();
+      const distance = targetDate - now;
+
+      if (distance <= 0) {
+        countdown.textContent = "You may now enter.";
+        return;
+      }
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      countdown.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    const lines = [
+      "-.-- --- ..- .----. .-. . / ... -- .- .-. - --..-- / .-. .. --. .... - ..--.. / ... --- .-.. ...- . / - .... .. ... .-.-.- .-.-.- .-.-.- / .--.",
+      "-.-- --- ..- .----. .-. . / ... -- .- .-. - --..-- / .-. .. --. .... - ..--.. / ... --- .-.. ...- . / - .... .. ... .-.-.- .-.-.- .-.-.- / ..-",
+      "-.-- --- ..- .----. .-. . / ... -- .- .-. - --..-- / .-. .. --. .... - ..--.. / ... --- .-.. ...- . / - .... .. ... .-.-.- .-.-.- .-.-.- / --..",
+      "-.-- --- ..- .----. .-. . / ... -- .- .-. - --..-- / .-. .. --. .... - ..--.. / ... --- .-.. ...- . / - .... .. ... .-.-.- .-.-.- .-.-.- / --..",
+      "-.-- --- ..- .----. .-. . / ... -- .- .-. - --..-- / .-. .. --. .... - ..--.. / ... --- .-.. ...- . / - .... .. ... .-.-.- .-.-.- .-.-.- / .-..",
+      "-.-- --- ..- .----. .-. . / ... -- .- .-. - --..-- / .-. .. --. .... - ..--.. / ... --- .-.. ...- . / - .... .. ... .-.-.- .-.-.- .-.-.- / ."
+    ];
+
+    const DOT = 200;
+    const DASH = 600;
+    const SYMBOL_PAUSE = 200;
+    const LETTER_PAUSE = 600;
+    const WORD_PAUSE = 1400;
+    const LINE_PAUSE = 3000;
+
+    async function flash(duration) {
+      lamp.style.opacity = 1;
+      await new Promise(resolve => setTimeout(resolve, duration));
+      lamp.style.opacity = 0;
+      await new Promise(resolve => setTimeout(resolve, SYMBOL_PAUSE));
+    }
+
+    async function flashMorse(line) {
+      const words = line.split(' / ');
+      for (let word of words) {
+        const letters = word.split(' ');
+        for (let letter of letters) {
+          for (let char of letter) {
+            if (char === '.') {
+              await flash(DOT);
+            } else if (char === '-') {
+              await flash(DASH);
+            }
+          }
+          await new Promise(resolve => setTimeout(resolve, LETTER_PAUSE - SYMBOL_PAUSE));
+        }
+        await new Promise(resolve => setTimeout(resolve, WORD_PAUSE - LETTER_PAUSE));
+      }
+    }
+
+    async function loopMorse() {
+      while (true) {
+        for (let line of lines) {
+          await flashMorse(line);
+          await new Promise(resolve => setTimeout(resolve, LINE_PAUSE));
+        }
+      }
+    }
+
+    loopMorse();
+  </script>
+</body>
+</html>
