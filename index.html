@@ -20,29 +20,30 @@
       position: absolute;
       bottom: 0;
       left: 40px;
+      display: flex;
+      flex-direction: column-reverse;
+      align-items: center;
       z-index: 10;
     }
 
     .lamp-post {
-      width: 12px;
-      height: 220px;
+      width: 10px;
+      height: 200px;
       background: #444;
-      margin: 0 auto;
     }
 
     .lamp-head {
       width: 60px;
-      height: 22px;
+      height: 20px;
       background: #222;
-      border-radius: 12px;
-      margin-left: -24px;
+      border-radius: 10px;
       position: relative;
     }
 
     .light-cone {
       position: absolute;
-      top: 22px;
-      left: -80px;
+      top: 20px;
+      left: -70px;
       width: 200px;
       height: 300px;
       background: radial-gradient(circle at center top, rgba(255,255,180,0.6), rgba(255,255,180,0) 80%);
@@ -87,10 +88,10 @@
 <body>
 
   <div class="lamp-structure">
-    <div class="lamp-post"></div>
     <div class="lamp-head">
       <div class="light-cone" id="lamp"></div>
     </div>
+    <div class="lamp-post"></div>
   </div>
 
   <div class="terminal" id="login-screen">
