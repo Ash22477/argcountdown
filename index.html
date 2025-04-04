@@ -1,221 +1,257 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Morse Code Lamp with Countdown, Music, and Aligned Clouds</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LYRA</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
     body {
       margin: 0;
-      background: linear-gradient(#001122, #000);
+      background: #000;
+      color: #00ffcc;
+      font-family: 'Share Tech Mono', monospace;
       overflow: hidden;
       height: 100vh;
-      cursor: pointer;
+      position: relative;
     }
 
-    .cloud-right, .cloud-left {
+    .grain {
       position: absolute;
-      top: 0;
-      width: 500px;
-      height: auto;
-      z-index: 3;
-      opacity: 0.5;
-    }
-
-    .cloud-right {
-      right: -500px;
-      animation: moveCloudRightToLeft 150s linear infinite;
-    }
-
-    .cloud-left {
-      left: -500px;
-      animation: moveCloudLeftToRight 150s linear infinite;
-    }
-
-    @keyframes moveCloudRightToLeft {
-      from { right: -500px; }
-      to { right: 110%; }
-    }
-
-    @keyframes moveCloudLeftToRight {
-      from { left: -500px; }
-      to { left: 110%; }
-    }
-
-    .streetlamp {
-      position: absolute;
-      bottom: 0;
-      left: 40px;
-      width: 10px;
-      height: 250px;
-      background: #333;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      background-image: url('https://www.transparenttextures.com/patterns/asfalt-dark.png');
+      opacity: 0.05;
       z-index: 1;
     }
 
-    .lamp-head {
-      position: absolute;
-      top: -10px;
-      left: -30px;
-      width: 70px;
-      height: 20px;
-      background: #222;
-      border-radius: 10px;
-    }
-
-    .light-cone {
-      position: absolute;
-      top: 10px;
-      left: -100px;
-      width: 200px;
-      height: 300px;
-      background: radial-gradient(circle at center top, rgba(255,255,180,0.7), rgba(255,255,180,0) 80%);
-      opacity: 0;
-      transition: opacity 0.2s ease-in-out;
-    }
-
-    .countdown {
-      position: absolute;
-      top: 45%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: #fff;
-      font-family: monospace;
-      font-size: 64px;
-      z-index: 2;
-      text-align: center;
-    }
-
-    .message {
-      position: absolute;
-      top: 55%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: #ccc;
-      font-family: monospace;
-      font-size: 24px;
-      z-index: 2;
-      text-align: center;
-    }
-
-    .click-note {
+    .lamp {
       position: absolute;
       bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: #666;
-      font-family: monospace;
-      font-size: 14px;
+      right: 30px;
+      width: 15px;
+      height: 15px;
+      background: #ffff99;
+      border-radius: 50%;
+      opacity: 0;
+      box-shadow: 0 0 10px #ffff99aa;
       z-index: 2;
-      animation: blink 1.5s infinite;
     }
 
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
+    .terminal {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 3;
     }
+
+    .terminal p {
+      font-size: 1.5rem;
+      color: #00ffcc;
+      margin: 0 0 20px;
+      opacity: 0.8;
+    }
+
+    #code-input {
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid #00ffcc;
+      color: #00ffcc;
+      font-size: 2rem;
+      text-align: center;
+      outline: none;
+      width: 80px;
+      caret-color: #00ffcc;
+      animation: blinkCaret 1s infinite;
+    }
+
+    @keyframes blinkCaret {
+      0%, 49% { border-bottom-color: #00ffcc; }
+      50%, 100% { border-bottom-color: transparent; }
+    }
+
+    #code-input:hover {
+      text-shadow: 0 0 5px #ff00ff;
+    }
+
+    .clouds {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 300%;
+      height: 200px;
+      background: url('https://i.imgur.com/2l6g7Yq.png') repeat-x;
+      background-size: contain;
+      animation: moveClouds 60s linear infinite;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    @keyframes moveClouds {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    .weather-button {
+      margin-top: 30px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      background: #111;
+      color: #00ffcc;
+      border: 1px solid #00ffcc;
+      cursor: pointer;
+    }
+
+    .hidden { display: none; }
   </style>
 </head>
 <body>
-  <img src="dc6a0cf2f1575f9f8da7159b72200ecb.gif" alt="cloud" class="cloud-right" />
-  <img src="dc6a0cf2f1575f9f8da7159b72200ecb.gif" alt="cloud" class="cloud-left" />
-  <div class="countdown" id="countdown"></div>
-  <div class="message">Good things come to those who wait.</div>
-  <div class="click-note" id="click-note">click anywhere to begin</div>
+  <div class="clouds" id="clouds"></div>
+  <div class="grain"></div>
+  <div class="lamp" id="lamp"></div>
 
-  <div class="streetlamp">
-    <div class="lamp-head">
-      <div class="light-cone" id="lamp"></div>
-    </div>
+  <div class="terminal" id="login-screen">
+    <p>ACCESS CODE:</p>
+    <input type="text" id="code-input" maxlength="3" autocomplete="off" />
   </div>
 
-  <audio id="bg-music" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_e58e3ff389.mp3?filename=soft-piano-loop-10965.mp3" autoplay loop></audio>
-  <audio id="morse-audio" src="musical_morse_synced_full.mp3" muted loop></audio>
+  <div class="terminal hidden" id="error-screen">
+    <p>Error 404: Memory not found.</p>
+    <button class="weather-button" onclick="beginCountdown()">Refresh</button>
+  </div>
+
+  <div class="terminal hidden" id="countdown-screen">
+    <h1 id="countdown"></h1>
+    <p>Good things come to those who wait.</p>
+    <button class="weather-button" onclick="cycleWeather()">Weather Mode</button>
+  </div>
+  <audio id="bg-music" src="https://ash22477.github.io/argcountdown/musical_morse_synced_full.mp3" muted loop></audio>
 
   <script>
-    const lamp = document.getElementById('lamp');
-    const countdown = document.getElementById('countdown');
-    const clickNote = document.getElementById('click-note');
-    const morseAudio = document.getElementById('morse-audio');
+    const input = document.getElementById("code-input");
+    const login = document.getElementById("login-screen");
+    const error = document.getElementById("error-screen");
+    const countdownScreen = document.getElementById("countdown-screen");
+    const clouds = document.getElementById("clouds");
+    const lamp = document.getElementById("lamp");
+    const music = document.getElementById("bg-music");
 
-    function updateCountdown() {
-      const targetDate = new Date('2026-02-09T00:00:00+04:00').getTime();
-      const now = new Date().getTime();
-      const distance = targetDate - now;
+    // Morse settings
+    const DOT = 300, DASH = 900, SYMBOL_PAUSE = 200, LETTER_PAUSE = 500, WORD_PAUSE = 1200;
 
-      if (distance <= 0) {
-        countdown.textContent = "You may now enter.";
-        return;
-      }
-
-      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-      countdown.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    function delay(ms) {
+      return new Promise(res => setTimeout(res, ms));
     }
 
-    setInterval(updateCountdown, 1000);
-    updateCountdown();
-
-    const lines = [
-      "-.-- --- ..- .----. .-. . ... -- .- .-. - --..-- .-. .. --. .... - ..--.. ... --- .-.. ...- . - .... .. ... .-.-.- .-.-.- .-.-.- .--.",
-      "-.-- --- ..- .----. .-. . ... -- .- .-. - --..-- .-. .. --. .... - ..--.. ... --- .-.. ...- . - .... .. ... .-.-.- .-.-.- .-.-.- ..-",
-      "-.-- --- ..- .----. .-. . ... -- .- .-. - --..-- .-. .. --. .... - ..--.. ... --- .-.. ...- . - .... .. ... .-.-.- .-.-.- .-.-.- --..",
-      "-.-- --- ..- .----. .-. . ... -- .- .-. - --..-- .-. .. --. .... - ..--.. ... --- .-.. ...- . - .... .. ... .-.-.- .-.-.- .-.-.- --..",
-      "-.-- --- ..- .----. .-. . ... -- .- .-. - --..-- .-. .. --. .... - ..--.. ... --- .-.. ...- . - .... .. ... .-.-.- .-.-.- .-.-.- .-..",
-      "-.-- --- ..- .----. .-. . ... -- .- .-. - --..-- .-. .. --. .... - ..--.. ... --- .-.. ...- . - .... .. ... .-.-.- .-.-.- .-.-.- ."
-    ];
-
-    const DOT = 400;
-    const DASH = 1000;
-    const SYMBOL_PAUSE = 300;
-    const LETTER_PAUSE = 800;
-    const WORD_PAUSE = 1600;
-    const LINE_PAUSE = 3000;
-
-    async function flash(duration) {
-      lamp.style.opacity = 1;
-      await new Promise(resolve => setTimeout(resolve, duration));
-      lamp.style.opacity = 0;
-      await new Promise(resolve => setTimeout(resolve, SYMBOL_PAUSE));
-    }
-
-    async function flashMorse(line) {
-      const words = line.split(' / ');
+    async function blinkMorse(message) {
+      const words = message.split(" / ");
       for (let word of words) {
-        const letters = word.split(' ');
+        const letters = word.split(" ");
         for (let letter of letters) {
           for (let char of letter) {
-            if (char === '.') {
-              await flash(DOT);
-            } else if (char === '-') {
-              await flash(DASH);
-            }
+            lamp.style.opacity = 1;
+            await delay(char === "." ? DOT : DASH);
+            lamp.style.opacity = 0;
+            await delay(SYMBOL_PAUSE);
           }
-          await new Promise(resolve => setTimeout(resolve, LETTER_PAUSE - SYMBOL_PAUSE));
+          await delay(LETTER_PAUSE);
         }
-        await new Promise(resolve => setTimeout(resolve, WORD_PAUSE - LETTER_PAUSE));
+        await delay(WORD_PAUSE);
       }
     }
 
-    async function loopMorse() {
-      while (true) {
-        for (let line of lines) {
-          await flashMorse(line);
-          await new Promise(resolve => setTimeout(resolve, LINE_PAUSE));
-        }
-      }
+    function playMorseLoop(msg) {
+      (async function loop() {
+        while (true) await blinkMorse(msg);
+      })();
     }
 
-    // One-time click to begin everything
-    document.body.addEventListener('click', () => {
-      morseAudio.muted = false;
-      morseAudio.volume = 0.3;
-      morseAudio.play();
-      loopMorse();
-      clickNote.remove(); // remove "click to begin"
+    let morsePhase = "start"; // start: 404 / after: "solve this"
+
+    // Trigger music & first Morse after interaction
+    window.addEventListener("click", () => {
+      music.muted = false;
+      music.play();
+      if (morsePhase === "start") {
+        playMorseLoop("..-. --- ..- .-. / --- / ..-. --- ..- .-.");
+      }
     }, { once: true });
+
+    // Puzzle input logic
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        if (input.value === "404") {
+          login.classList.add("hidden");
+          error.classList.remove("hidden");
+        }
+      }
+    });
+
+    function beginCountdown() {
+      error.classList.add("hidden");
+      countdownScreen.classList.remove("hidden");
+      clouds.style.display = "block";
+      morsePhase = "after";
+      playMorseLoop("-.-- --- ..- .----. .-. . / ... -- .- .-. - --..-- / ... --- .-.. ...- . / - .... .. ... / .--. ..- --.. --.. .-.. .");
+      startCountdown();
+    }
+
+    function startCountdown() {
+      const countdown = document.getElementById("countdown");
+      const target = new Date("2025-02-09T00:00:00+04:00").getTime();
+      const interval = setInterval(() => {
+        const now = new Date().getTime();
+        const diff = target - now;
+        if (diff <= 0) {
+          clearInterval(interval);
+          countdown.innerText = "It’s time.";
+          return;
+        }
+        const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((diff % (1000 * 60)) / 1000);
+        countdown.innerText = `${d}d ${h}h ${m}m ${s}s`;
+      }, 1000);
+    }
+
+    let weatherState = 0;
+    function cycleWeather() {
+      weatherState = (weatherState + 1) % 5;
+      switch (weatherState) {
+        case 0: clouds.style.animationDuration = "60s"; break;
+        case 1: clouds.style.animationDuration = "30s"; break;
+        case 2: clouds.style.animationDuration = "15s"; break;
+        case 3: rainCatsAndDogs(); break;
+        case 4: clouds.style.animationDuration = "60s"; break;
+      }
+    }
+
+    function rainCatsAndDogs() {
+      const symbols = ["🐱", "🐶"];
+      for (let i = 0; i < 10; i++) {
+        const el = document.createElement("div");
+        el.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+        el.style.position = "absolute";
+        el.style.top = "-40px";
+        el.style.left = Math.random() * 100 + "vw";
+        el.style.fontSize = "28px";
+        el.style.zIndex = "10";
+        el.style.animation = "fall 4s linear forwards";
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 4000);
+      }
+    }
+
+    // Falling animation
+    const style = document.createElement('style');
+    style.innerHTML = `@keyframes fall { 0%{transform:translateY(0);opacity:1;} 100%{transform:translateY(100vh);opacity:0;} }`;
+    document.head.appendChild(style);
   </script>
 </body>
 </html>
