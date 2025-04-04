@@ -20,29 +20,29 @@
       position: absolute;
       bottom: 0;
       left: 40px;
-      display: flex;
-      flex-direction: column-reverse;
-      align-items: center;
       z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .lamp-post {
-      width: 10px;
-      height: 200px;
+      width: 12px;
+      height: 220px;
       background: #444;
     }
 
     .lamp-head {
       width: 60px;
-      height: 20px;
+      height: 22px;
       background: #222;
-      border-radius: 10px;
+      border-radius: 12px;
       position: relative;
     }
 
     .light-cone {
       position: absolute;
-      top: 20px;
+      top: 22px;
       left: -70px;
       width: 200px;
       height: 300px;
@@ -87,28 +87,33 @@
 </head>
 <body>
 
+  <!-- LAMP -->
   <div class="lamp-structure">
+    <div class="lamp-post"></div>
     <div class="lamp-head">
       <div class="light-cone" id="lamp"></div>
     </div>
-    <div class="lamp-post"></div>
   </div>
 
+  <!-- LOGIN -->
   <div class="terminal" id="login-screen">
     <p>ACCESS CODE:</p>
     <input type="text" id="code-input" maxlength="3" autocomplete="off" />
   </div>
 
+  <!-- ERROR -->
   <div class="terminal hidden" id="error-screen">
     <p>Error 404: Memory not found.</p>
     <button onclick="beginCountdown()">Refresh</button>
   </div>
 
+  <!-- COUNTDOWN -->
   <div class="terminal hidden" id="countdown-screen">
     <div id="countdown"></div>
     <div class="message">Good things come to those who wait.</div>
   </div>
 
+  <!-- AUDIO -->
   <audio id="bg-music" src="https://ash22477.github.io/argcountdown/musical_morse_synced_full.mp3" muted loop></audio>
 
   <script>
