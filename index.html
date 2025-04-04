@@ -16,43 +16,33 @@
       position: relative;
     }
 
-    .grain {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      background: repeating-radial-gradient(#111 1px, #000 2px);
-      opacity: 0.05;
-      z-index: 1;
-    }
-
     .lamp-structure {
       position: absolute;
       bottom: 0;
-      right: 30px;
+      left: 40px;
       z-index: 10;
     }
 
     .lamp-post {
-      width: 10px;
-      height: 200px;
+      width: 12px;
+      height: 220px;
       background: #444;
       margin: 0 auto;
     }
 
     .lamp-head {
       width: 60px;
-      height: 20px;
+      height: 22px;
       background: #222;
-      border-radius: 10px;
-      margin-left: -25px;
+      border-radius: 12px;
+      margin-left: -24px;
       position: relative;
     }
 
     .light-cone {
       position: absolute;
-      top: 20px;
-      left: -70px;
+      top: 22px;
+      left: -80px;
       width: 200px;
       height: 300px;
       background: radial-gradient(circle at center top, rgba(255,255,180,0.6), rgba(255,255,180,0) 80%);
@@ -80,41 +70,21 @@
       width: 80px;
     }
 
-    .clouds {
-      display: none;
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 300%;
-      height: 200px;
-      background: url('https://i.imgur.com/2l6g7Yq.png') repeat-x;
-      background-size: contain;
-      animation: moveClouds 60s linear infinite;
-      z-index: 0;
-      opacity: 0.4;
-    }
-
-    @keyframes moveClouds {
-      from { transform: translateX(0); }
-      to { transform: translateX(-50%); }
-    }
-
-    .weather-button {
-      margin-top: 30px;
-      padding: 10px 20px;
-      font-size: 1rem;
-      background: #111;
-      color: #00ffcc;
-      border: 1px solid #00ffcc;
-      cursor: pointer;
-    }
-
     .hidden { display: none; }
+
+    #countdown {
+      font-size: 48px;
+      color: #ffffff;
+    }
+
+    .message {
+      margin-top: 10px;
+      font-size: 18px;
+      color: #aaa;
+    }
   </style>
 </head>
 <body>
-  <div class="clouds" id="clouds"></div>
-  <div class="grain"></div>
 
   <div class="lamp-structure">
     <div class="lamp-post"></div>
@@ -130,13 +100,12 @@
 
   <div class="terminal hidden" id="error-screen">
     <p>Error 404: Memory not found.</p>
-    <button class="weather-button" onclick="beginCountdown()">Refresh</button>
+    <button onclick="beginCountdown()">Refresh</button>
   </div>
 
   <div class="terminal hidden" id="countdown-screen">
-    <h1 id="countdown"></h1>
-    <p>Good things come to those who wait.</p>
-    <button class="weather-button" onclick="cycleWeather()">Weather Mode</button>
+    <div id="countdown"></div>
+    <div class="message">Good things come to those who wait.</div>
   </div>
 
   <audio id="bg-music" src="https://ash22477.github.io/argcountdown/musical_morse_synced_full.mp3" muted loop></audio>
@@ -147,7 +116,6 @@
     const error = document.getElementById("error-screen");
     const countdownScreen = document.getElementById("countdown-screen");
     const countdown = document.getElementById("countdown");
-    const clouds = document.getElementById("clouds");
     const lamp = document.getElementById("lamp");
     const music = document.getElementById("bg-music");
 
@@ -202,20 +170,19 @@
     function beginCountdown() {
       error.classList.add("hidden");
       countdownScreen.classList.remove("hidden");
-      clouds.style.display = "block";
       morsePhase = "after";
-      playMorseLoop("-.-- --- ..- .----. .-. . / ... -- .- .-. - --..-- / ... --- .-.. ...- . / - .... .. ... / .--. ..- --.. --.. .-.. .");
+      playMorseLoop("-.-- --- ..- .----. .-. . / ... -- .- .-. - / .-. .. --. .... - ..--.. / ... --- .-.. ...- . / - .... .. ... / .--. ..- --.. --.. .-.. .");
       startCountdown();
     }
 
     function startCountdown() {
-      const target = new Date("2025-02-09T00:00:00+04:00").getTime();
+      const target = new Date("2026-02-09T00:00:00+04:00").getTime();
       const interval = setInterval(() => {
         const now = new Date().getTime();
         const diff = target - now;
         if (diff <= 0) {
           clearInterval(interval);
-          countdown.innerText = ""; // No "It's time."
+          countdown.innerText = "";
           return;
         }
         const d = Math.floor(diff / (1000 * 60 * 60 * 24));
@@ -225,38 +192,6 @@
         countdown.innerText = `${d}d ${h}h ${m}m ${s}s`;
       }, 1000);
     }
-
-    let weatherState = 0;
-    function cycleWeather() {
-      weatherState = (weatherState + 1) % 5;
-      switch (weatherState) {
-        case 0: clouds.style.animationDuration = "60s"; break;
-        case 1: clouds.style.animationDuration = "30s"; break;
-        case 2: clouds.style.animationDuration = "15s"; break;
-        case 3: rainCatsAndDogs(); break;
-        case 4: clouds.style.animationDuration = "60s"; break;
-      }
-    }
-
-    function rainCatsAndDogs() {
-      const symbols = ["🐱", "🐶"];
-      for (let i = 0; i < 10; i++) {
-        const el = document.createElement("div");
-        el.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-        el.style.position = "absolute";
-        el.style.top = "-40px";
-        el.style.left = Math.random() * 100 + "vw";
-        el.style.fontSize = "28px";
-        el.style.zIndex = "10";
-        el.style.animation = "fall 4s linear forwards";
-        document.body.appendChild(el);
-        setTimeout(() => el.remove(), 4000);
-      }
-    }
-
-    const style = document.createElement('style');
-    style.innerHTML = `@keyframes fall { 0%{transform:translateY(0);opacity:1;} 100%{transform:translateY(100vh);opacity:0;} }`;
-    document.head.appendChild(style);
   </script>
 </body>
 </html>
